@@ -4,9 +4,11 @@ import { format, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { CustomHeader } from "../../../../components/CustomHeader";
 import { LoadingState, ErrorState } from "../../components/ui-states";
+import { Toast } from "../../components/toast/Toast";
 import type { Product } from "../../interfaces/product.response";
 import { useProductById } from "../../hooks/useProductById";
 import { useCategories } from "../../hooks/useCategories";
+import { useUpdateProduct } from "../../hooks/useUpdateProduct";
 import "./ProductDetailPage.css";
 
 const ProductDetailPage = () => {
@@ -14,6 +16,15 @@ const ProductDetailPage = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState<Partial<Product>>({});
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+    isVisible: boolean;
+  }>({
+    message: "",
+    type: "success",
+    isVisible: false,
+  });
 
   const {
     data: product,
@@ -24,6 +35,7 @@ const ProductDetailPage = () => {
   } = useProductById(Number(id));
 
   const { data: categories, isLoading: isLoadingCategories } = useCategories();
+  const updateMutation = useUpdateProduct();
 
   const formData = product ? { ...product, ...editedData } : null;
 
@@ -64,9 +76,55 @@ const ProductDetailPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form data:", formData);
-    setIsEditing(false);
-    setEditedData({});
+    
+    if (!formData || !id) return;
+
+    const categoryId = categories?.find(
+      (cat) => cat.name === formData.category
+    )?.id;
+
+    if (!categoryId) {
+      setToast({
+        message: "Error: Categoría no válida",
+        type: "error",
+        isVisible: true,
+      });
+      return;
+    }
+
+    const updateData = {
+      name: formData.name,
+      description: formData.description,
+      price: parseFloat(formData.price),
+      categoryId: categoryId,
+      state: formData.state,
+      code: formData.code,
+    };
+
+    updateMutation.mutate(
+      { id: Number(id), data: updateData },
+      {
+        onSuccess: () => {
+          setToast({
+            message: "Producto actualizado exitosamente",
+            type: "success",
+            isVisible: true,
+          });
+          setIsEditing(false);
+          setEditedData({});
+        },
+        onError: (error) => {
+          setToast({
+            message:
+              error instanceof Error
+                ? error.message
+                : "Error al actualizar el producto",
+            type: "error",
+            isVisible: true,
+          });
+        },
+      }
+    );
   };
 
   const handleCancel = () => {
@@ -330,6 +388,7 @@ const ProductDetailPage = () => {
                 onClick={handleCancel}
                 className="btn-cancel"
                 aria-label="Cancelar edición y descartar cambios"
+                disabled={updateMutation.isPending}
               >
                 Cancelar
               </button>
@@ -337,13 +396,21 @@ const ProductDetailPage = () => {
                 type="submit"
                 className="btn-submit"
                 aria-label="Guardar cambios del producto"
+                disabled={updateMutation.isPending}
               >
-                Guardar Cambios
+                {updateMutation.isPending ? "Guardando..." : "Guardar Cambios"}
               </button>
             </div>
           )}
         </form>
       </article>
+
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
+      />
     </main>
   );
 };

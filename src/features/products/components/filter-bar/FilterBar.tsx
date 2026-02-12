@@ -12,6 +12,7 @@ interface FilterBarProps {
   onCategoryChange: (category: string) => void;
   onStateChange: (state: boolean | undefined) => void;
   onClearFilters: () => void;
+  onCreateProduct?: () => void;
 }
 
 export const FilterBar = ({
@@ -24,6 +25,7 @@ export const FilterBar = ({
   onCategoryChange,
   onStateChange,
   onClearFilters,
+  onCreateProduct,
 }: FilterBarProps) => {
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onCategoryChange(e.target.value);
@@ -46,6 +48,16 @@ export const FilterBar = ({
   return (
     <div className="filter-bar-container">
       <div className="filter-bar">
+        {onCreateProduct && (
+          <button
+            onClick={onCreateProduct}
+            className="filter-create-button"
+            aria-label="Crear nuevo producto"
+          >
+            + Crear Producto
+          </button>
+        )}
+
         <div className="filter-search-wrapper">
           <SearchBar
             placeholder="Buscar producto..."
@@ -64,7 +76,9 @@ export const FilterBar = ({
           aria-busy={isLoadingCategories}
         >
           <option value="">
-            {isLoadingCategories ? "Cargando categorías..." : "Todas las categorías"}
+            {isLoadingCategories
+              ? "Cargando categorías..."
+              : "Todas las categorías"}
           </option>
           {!isLoadingCategories &&
             categories.map((category) => (
@@ -77,11 +91,7 @@ export const FilterBar = ({
         <select
           id="state-select"
           value={
-            selectedState === undefined
-              ? ""
-              : selectedState
-                ? "true"
-                : "false"
+            selectedState === undefined ? "" : selectedState ? "true" : "false"
           }
           onChange={handleStateChange}
           className="filter-select"

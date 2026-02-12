@@ -66,7 +66,7 @@ export const SearchBar = ({
           </button>
         )}
       </div>
-      <button onClick={handleSearch}>Buscar</button>
+      {/* <button onClick={handleSearch}>Buscar</button> */}
     </div>
   );
 };
