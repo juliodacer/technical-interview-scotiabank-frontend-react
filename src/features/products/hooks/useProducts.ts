@@ -10,7 +10,7 @@ interface UseProductsParams {
 }
 
 export const useProducts = (params: UseProductsParams = {}) => {
-  const { page = 1, size = 6, q, category, state } = params;
+  const { page = 1, size = 5, q, category, state } = params;
 
   return useQuery({
     queryKey: ["products", page, size, q, category, state],

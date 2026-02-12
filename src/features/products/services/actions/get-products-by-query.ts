@@ -10,9 +10,9 @@ interface GetProductsParams {
 }
 
 export const getProductsByQuery = async (
-  params: GetProductsParams = {}
+  params: GetProductsParams = {},
 ): Promise<ProductResponse> => {
-  const { page = 1, size = 6, q, category, state } = params;
+  const { page = 1, size = 5, q, category, state } = params;
 
   const queryParams: Record<string, string | number | boolean> = {
     page,
@@ -35,7 +35,7 @@ export const getProductsByQuery = async (
     `${import.meta.env.VITE_API_URL}/products`,
     {
       params: queryParams,
-    }
+    },
   );
   return response.data;
 };
