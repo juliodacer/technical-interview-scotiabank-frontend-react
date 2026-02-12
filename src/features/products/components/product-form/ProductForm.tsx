@@ -43,7 +43,6 @@ export const ProductForm = ({
 
   useEffect(() => {
     if (initialData) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         code: initialData.code || "",
         name: initialData.name || "",
