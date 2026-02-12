@@ -14,9 +14,6 @@ export const Pagination = ({
   onPageChange,
 }: PaginationProps) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-  if (totalPages <= 1) return null;
-
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
@@ -60,7 +57,7 @@ export const Pagination = ({
   return (
     <nav className="pagination" aria-label="Navegación de páginas">
       <div className="pagination-info">
-        Mostrando {startItem}-{endItem} de {totalItems} productos
+        Mostrando {startItem}-{endItem} de {totalItems} {totalItems === 1 ? "producto" : "productos"}
       </div>
 
       <div className="pagination-controls">

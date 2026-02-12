@@ -92,16 +92,16 @@ export const FilterBar = ({
           <option value="false">Inactivo</option>
         </select>
 
-        {hasActiveFilters && (
-          <button
-            onClick={onClearFilters}
-            className="filter-clear-button"
-            type="button"
-            aria-label="Limpiar todos los filtros"
-          >
-            Limpiar filtros
-          </button>
-        )}
+        <button
+          onClick={onClearFilters}
+          className={`filter-clear-button ${!hasActiveFilters ? "filter-clear-button-hidden" : ""}`}
+          type="button"
+          aria-label="Limpiar todos los filtros"
+          disabled={!hasActiveFilters}
+          tabIndex={hasActiveFilters ? 0 : -1}
+        >
+          Limpiar filtros
+        </button>
       </div>
     </div>
   );

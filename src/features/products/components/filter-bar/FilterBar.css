@@ -126,20 +126,39 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   white-space: nowrap;
   flex-shrink: 0;
+  opacity: 1;
+  transform: scale(1);
+  visibility: visible;
 }
 
-.filter-clear-button:hover {
+.filter-clear-button-hidden {
+  opacity: 0;
+  transform: scale(0.9);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.filter-clear-button:hover:not(:disabled) {
   background: #0f172a;
   color: #ffffff;
   border-color: #0f172a;
+  transform: scale(1.02);
 }
 
-.filter-clear-button:focus {
+.filter-clear-button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.filter-clear-button:focus:not(:disabled) {
   outline: 2px solid #0f172a;
   outline-offset: 2px;
+}
+
+.filter-clear-button:disabled {
+  cursor: default;
 }
 
 @media (max-width: 1024px) {
