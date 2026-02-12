@@ -1,50 +1,24 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { CustomHeader } from "../../../../components/CustomHeader";
 import type { Product } from "../../interfaces/product.response";
-import { getProductById } from "../../services/actions/get-product-by-id";
+import { useProductById } from "../../hooks/useProductById";
 import "./ProductDetailPage.css";
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [originalData, setOriginalData] = useState<Product | null>(null);
-  const [formData, setFormData] = useState<Product>({
-    id: 0,
-    code: "",
-    name: "",
-    description: "",
-    price: "",
-    reg_date: new Date(),
-    mod_date: null,
-    state: true,
-    category: "",
-  });
+  const [editedData, setEditedData] = useState<Partial<Product>>({});
 
-  const fetchProduct = useCallback(async () => {
-    if (!id) return;
+  const {
+    data: product,
+    isLoading,
+    isError,
+    error,
+  } = useProductById(Number(id));
 
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const product = await getProductById(Number(id));
-      setFormData(product);
-      setOriginalData(product);
-    } catch (err) {
-      setError("Error al cargar el producto. Por favor, intenta nuevamente.");
-      console.error("Error fetching product:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchProduct();
-  }, [fetchProduct]);
+  const formData = product ? { ...product, ...editedData } : null;
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -52,14 +26,14 @@ const ProductDetailPage = () => {
     >,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setEditedData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
   const handleStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
+    setEditedData((prev) => ({
       ...prev,
       state: e.target.checked,
     }));
@@ -69,13 +43,12 @@ const ProductDetailPage = () => {
     e.preventDefault();
     console.log("Form data:", formData);
     setIsEditing(false);
+    setEditedData({});
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    if (originalData) {
-      setFormData(originalData);
-    }
+    setEditedData({});
   };
 
   const handleBack = () => {
@@ -92,17 +65,25 @@ const ProductDetailPage = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <main className="product-detail-page">
         <div className="error-container">
-          <p className="error-message">{error}</p>
+          <p className="error-message">
+            {error instanceof Error
+              ? error.message
+              : "Error al cargar el producto. Por favor, intenta nuevamente."}
+          </p>
           <button onClick={handleBack} className="btn-back" type="button">
             ← Volver al listado
           </button>
         </div>
       </main>
     );
+  }
+
+  if (!formData) {
+    return null;
   }
 
   return (
