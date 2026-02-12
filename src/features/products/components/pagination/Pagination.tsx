@@ -21,7 +21,7 @@ export const Pagination = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   const getPageNumbers = (): (number | string)[] => {
-    if (totalPages <= 7) {
+    if (totalPages <= 6) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 

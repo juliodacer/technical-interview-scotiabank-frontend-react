@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { CustomHeader } from "../../../../components/CustomHeader";
 import { SearchBar } from "../../components/SearchBar";
-import { ProductList } from "../../components/product-list/ProductList";
+import { ProductTable } from "../../components/product-table/ProductTable";
 import { Pagination } from "../../components/pagination/Pagination";
 import { useProducts } from "../../hooks/useProducts";
 import "./HomePage.css";
@@ -12,7 +12,7 @@ export const HomePage = () => {
 
   const { data, isLoading, isError, error, refetch } = useProducts({
     page: currentPage,
-    size: 6,
+    size: 5,
     q: searchQuery,
   });
 
@@ -93,11 +93,11 @@ export const HomePage = () => {
         </div>
       ) : (
         <>
-          <ProductList products={products} />
+          <ProductTable products={products} />
           <Pagination
             currentPage={currentPage}
             totalItems={totalItems}
-            itemsPerPage={6}
+            itemsPerPage={5}
             onPageChange={handlePageChange}
           />
         </>

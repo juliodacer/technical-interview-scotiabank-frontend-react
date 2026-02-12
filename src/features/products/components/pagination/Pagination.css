@@ -9,8 +9,9 @@
 
 .pagination-info {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #475569;
   text-align: center;
+  font-weight: 500;
 }
 
 .pagination-controls {
@@ -23,24 +24,25 @@
 
 .pagination-button {
   padding: 0.5rem 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #ffffff;
-  color: #374151;
+  color: #334155;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
 }
 
 .pagination-button:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  background: #f8fafc;
+  border-color: #94a3b8;
 }
 
 .pagination-button:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  color: #94a3b8;
 }
 
 .pagination-numbers {
@@ -53,33 +55,33 @@
   min-width: 2.5rem;
   height: 2.5rem;
   padding: 0.5rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #cbd5e1;
   border-radius: 6px;
   background: #ffffff;
-  color: #374151;
+  color: #334155;
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .pagination-number:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  background: #f8fafc;
+  border-color: #94a3b8;
 }
 
 .pagination-number-active {
-  background: #3b82f6;
+  background: #0f172a;
   color: #ffffff;
-  border-color: #3b82f6;
+  border-color: #0f172a;
 }
 
 .pagination-number-active:hover {
-  background: #2563eb;
-  border-color: #2563eb;
+  background: #1e293b;
+  border-color: #1e293b;
 }
 
 .pagination-ellipsis {
@@ -88,36 +90,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #6b7280;
+  color: #64748b;
   font-size: 0.875rem;
   user-select: none;
-}
-
-@media (max-width: 640px) {
-  .pagination {
-    padding: 1.5rem 0.5rem;
-  }
-
-  .pagination-controls {
-    width: 100%;
-  }
-
-  .pagination-button-prev,
-  .pagination-button-next {
-    flex: 1;
-  }
-
-  .pagination-numbers {
-    width: 100%;
-    justify-content: center;
-    order: -1;
-    margin-bottom: 0.5rem;
-  }
-
-  .pagination-number,
-  .pagination-ellipsis {
-    min-width: 2rem;
-    height: 2rem;
-    font-size: 0.75rem;
-  }
+  font-weight: 600;
 }
