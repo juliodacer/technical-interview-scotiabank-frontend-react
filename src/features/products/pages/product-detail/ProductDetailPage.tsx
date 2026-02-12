@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router";
+import { format, parseISO } from "date-fns";
+import { es } from "date-fns/locale";
 import { CustomHeader } from "../../../../components/CustomHeader";
+import { LoadingState, ErrorState } from "../../components/ui-states";
 import type { Product } from "../../interfaces/product.response";
 import { useProductById } from "../../hooks/useProductById";
+import { useCategories } from "../../hooks/useCategories";
 import "./ProductDetailPage.css";
 
 const ProductDetailPage = () => {
@@ -16,9 +20,28 @@ const ProductDetailPage = () => {
     isLoading,
     isError,
     error,
+    refetch,
   } = useProductById(Number(id));
 
+  const { data: categories, isLoading: isLoadingCategories } = useCategories();
+
   const formData = product ? { ...product, ...editedData } : null;
+
+  const formatDate = (
+    date: Date | null | undefined,
+    isModDate = false,
+  ): string => {
+    if (!date) {
+      return isModDate ? "No se realizó ninguna modificación" : "N/A";
+    }
+
+    try {
+      const dateObj = typeof date === "string" ? parseISO(date) : date;
+      return format(dateObj, "d 'de' MMMM 'de' yyyy, HH:mm", { locale: es });
+    } catch {
+      return isModDate ? "No se realizó ninguna modificación" : "N/A";
+    }
+  };
 
   const handleInputChange = (
     e: React.ChangeEvent<
@@ -58,9 +81,7 @@ const ProductDetailPage = () => {
   if (isLoading) {
     return (
       <main className="product-detail-page">
-        <div className="loading-container">
-          <p className="loading-message">Cargando producto...</p>
-        </div>
+        <LoadingState message="Cargando producto..." />
       </main>
     );
   }
@@ -68,16 +89,16 @@ const ProductDetailPage = () => {
   if (isError) {
     return (
       <main className="product-detail-page">
-        <div className="error-container">
-          <p className="error-message">
-            {error instanceof Error
+        <ErrorState
+          message={
+            error instanceof Error
               ? error.message
-              : "Error al cargar el producto. Por favor, intenta nuevamente."}
-          </p>
-          <button onClick={handleBack} className="btn-back" type="button">
-            ← Volver al listado
-          </button>
-        </div>
+              : "Error al cargar el producto. Por favor, intenta nuevamente."
+          }
+          onRetry={refetch}
+          onSecondaryAction={handleBack}
+          secondaryActionLabel="Volver al listado"
+        />
       </main>
     );
   }
@@ -124,7 +145,7 @@ const ProductDetailPage = () => {
           aria-label="Formulario de producto bancario"
           noValidate
         >
-          <fieldset className="form-fieldset" disabled={!isEditing}>
+          <fieldset className="form-fieldset">
             <legend className="form-legend">Información del Producto</legend>
 
             <div className="form-grid">
@@ -145,10 +166,11 @@ const ProductDetailPage = () => {
                   required
                   aria-required="true"
                   autoComplete="off"
+                  disabled={!isEditing}
                 />
               </div>
 
-              <div className="form-group">
+              <div className="form-group form-group-full">
                 <label htmlFor="name" className="form-label">
                   Nombre del Producto
                   <abbr title="requerido" aria-label="campo requerido">
@@ -165,6 +187,7 @@ const ProductDetailPage = () => {
                   required
                   aria-required="true"
                   autoComplete="off"
+                  disabled={!isEditing}
                 />
               </div>
 
@@ -183,13 +206,18 @@ const ProductDetailPage = () => {
                   className="form-input"
                   required
                   aria-required="true"
+                  disabled={!isEditing || isLoadingCategories}
                 >
                   <option value="">Seleccionar categoría</option>
-                  <option value="Cuentas">Cuentas</option>
-                  <option value="Tarjetas">Tarjetas</option>
-                  <option value="Préstamos">Préstamos</option>
-                  <option value="Inversiones">Inversiones</option>
-                  <option value="Seguros">Seguros</option>
+                  {isLoadingCategories ? (
+                    <option disabled>Cargando categorías...</option>
+                  ) : (
+                    categories?.map((category) => (
+                      <option key={category.id} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
 
@@ -212,6 +240,7 @@ const ProductDetailPage = () => {
                   step="0.01"
                   min="0"
                   inputMode="decimal"
+                  disabled={!isEditing}
                 />
               </div>
 
@@ -232,10 +261,41 @@ const ProductDetailPage = () => {
                   required
                   aria-required="true"
                   aria-describedby="description-help"
+                  disabled={!isEditing}
                 />
                 <small id="description-help" className="form-help">
                   Describe las características principales del producto bancario
                 </small>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="reg_date" className="form-label">
+                  Fecha de Registro
+                </label>
+                <input
+                  type="text"
+                  id="reg_date"
+                  name="reg_date"
+                  value={formatDate(formData.reg_date)}
+                  className="form-input form-input-readonly"
+                  readOnly
+                  disabled
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="mod_date" className="form-label">
+                  Última Modificación
+                </label>
+                <input
+                  type="text"
+                  id="mod_date"
+                  name="mod_date"
+                  value={formatDate(formData.mod_date, true)}
+                  className="form-input form-input-readonly"
+                  readOnly
+                  disabled
+                />
               </div>
 
               <div className="form-group form-group-checkbox">
@@ -248,6 +308,7 @@ const ProductDetailPage = () => {
                     onChange={handleStateChange}
                     className="form-checkbox"
                     aria-describedby="state-help"
+                    disabled={!isEditing}
                   />
                   <span>Producto Activo</span>
                 </label>
