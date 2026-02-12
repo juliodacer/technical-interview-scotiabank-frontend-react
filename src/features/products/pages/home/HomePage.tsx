@@ -3,7 +3,7 @@ import { CustomHeader } from "../../../../components/CustomHeader";
 import { SearchBar } from "../../components/SearchBar";
 import { getProductsByQuery } from "../../services/actions/get-products-by-query";
 import type { Product } from "../../interfaces/product.response";
-import { ProductList } from "../../components/ProductList";
+import { ProductList } from "../../components/product-list/ProductList";
 
 export const HomePage = () => {
   const [products, setProducts] = useState<Product[]>([]);
