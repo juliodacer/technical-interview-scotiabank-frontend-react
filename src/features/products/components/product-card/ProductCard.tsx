@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import type { Product } from "../../interfaces/product.response";
 import "./ProductCard.css";
 
@@ -6,38 +7,61 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  return (
-    <div className="product-card">
-      <div className="product-card-header">
-        <h3 className="product-card-title">{product.name}</h3>
-        <span className="product-card-code">{product.code}</span>
-      </div>
+  const navigate = useNavigate();
 
-      <div className="product-card-body">
+  const handleClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  return (
+    <article
+      className="product-card"
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-label={`Ver detalles de ${product.name}`}
+    >
+      <header className="product-card-header">
+        <h3 className="product-card-title">{product.name}</h3>
+        <data className="product-card-code" value={product.code}>
+          {product.code}
+        </data>
+      </header>
+
+      <section className="product-card-body">
         <p className="product-card-description">{product.description}</p>
 
-        <div className="product-card-info">
+        <dl className="product-card-info">
           <div className="product-card-info-item">
-            <span className="product-card-label">Categoría</span>
-            <span className="product-card-value">{product.category}</span>
+            <dt className="product-card-label">Categoría</dt>
+            <dd className="product-card-value">{product.category}</dd>
           </div>
 
           <div className="product-card-info-item">
-            <span className="product-card-label">Precio</span>
-            <span className="product-card-value product-card-price">
-              {product.price}
-            </span>
+            <dt className="product-card-label">Precio</dt>
+            <dd className="product-card-value product-card-price">
+              <data value={product.price}>{product.price}</data>
+            </dd>
           </div>
-        </div>
-      </div>
+        </dl>
+      </section>
 
-      <div className="product-card-footer">
+      <footer className="product-card-footer">
         <span
           className={`product-card-status ${product.state ? "active" : "inactive"}`}
+          aria-label={`Estado del producto: ${product.state ? "Activo" : "Inactivo"}`}
         >
           {product.state ? "Activo" : "Inactivo"}
         </span>
-      </div>
-    </div>
+      </footer>
+    </article>
   );
 };
