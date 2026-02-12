@@ -1,23 +1,50 @@
 import { useState, useCallback } from "react";
 import { CustomHeader } from "../../../../components/CustomHeader";
-import { SearchBar } from "../../components/SearchBar";
+import { FilterBar } from "../../components/filter-bar/FilterBar";
 import { ProductTable } from "../../components/product-table/ProductTable";
 import { Pagination } from "../../components/pagination/Pagination";
+import { LoadingState, ErrorState, EmptyState } from "../../components/ui-states";
 import { useProducts } from "../../hooks/useProducts";
+import { useCategories } from "../../hooks/useCategories";
 import "./HomePage.css";
 
 export const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedState, setSelectedState] = useState<boolean | undefined>(
+    undefined,
+  );
+
+  const { data: categories, isLoading: isLoadingCategories } = useCategories();
 
   const { data, isLoading, isError, error, refetch } = useProducts({
     page: currentPage,
-    size: 5,
+    size: 6,
     q: searchQuery,
+    category: selectedCategory,
+    state: selectedState,
   });
 
-  const handleSearch = useCallback((query: string) => {
+  const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query.trim());
+    setCurrentPage(1);
+  }, []);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    setSelectedCategory(category);
+    setCurrentPage(1);
+  }, []);
+
+  const handleStateChange = useCallback((state: boolean | undefined) => {
+    setSelectedState(state);
+    setCurrentPage(1);
+  }, []);
+
+  const handleClearFilters = useCallback(() => {
+    setSearchQuery("");
+    setSelectedCategory("");
+    setSelectedState(undefined);
     setCurrentPage(1);
   }, []);
 
@@ -30,14 +57,21 @@ export const HomePage = () => {
     return (
       <>
         <CustomHeader
-          title="Gestión de Productos Bancarios"
+          title="Productos Bancarios"
           subtitle="Encuentra los productos financieros que necesitas"
         />
-        <SearchBar placeholder="Buscar producto" onQuery={handleSearch} />
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
-          <p>Cargando productos...</p>
-        </div>
+        <FilterBar
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+          selectedState={selectedState}
+          categories={categories || []}
+          isLoadingCategories={isLoadingCategories}
+          onSearchChange={handleSearchChange}
+          onCategoryChange={handleCategoryChange}
+          onStateChange={handleStateChange}
+          onClearFilters={handleClearFilters}
+        />
+        <LoadingState message="Cargando productos..." />
       </>
     );
   }
@@ -46,20 +80,28 @@ export const HomePage = () => {
     return (
       <>
         <CustomHeader
-          title="Gestión de Productos Bancarios"
+          title="Productos Bancarios"
           subtitle="Encuentra los productos financieros que necesitas"
         />
-        <SearchBar placeholder="Buscar producto" onQuery={handleSearch} />
-        <div className="error-state">
-          <p className="error-message">
-            {error instanceof Error
+        <FilterBar
+          searchQuery={searchQuery}
+          selectedCategory={selectedCategory}
+          selectedState={selectedState}
+          categories={categories || []}
+          isLoadingCategories={isLoadingCategories}
+          onSearchChange={handleSearchChange}
+          onCategoryChange={handleCategoryChange}
+          onStateChange={handleStateChange}
+          onClearFilters={handleClearFilters}
+        />
+        <ErrorState
+          message={
+            error instanceof Error
               ? error.message
-              : "Error al cargar los productos"}
-          </p>
-          <button onClick={() => refetch()} className="retry-button">
-            Intentar nuevamente
-          </button>
-        </div>
+              : "Error al cargar los productos"
+          }
+          onRetry={refetch}
+        />
       </>
     );
   }
@@ -70,34 +112,48 @@ export const HomePage = () => {
   return (
     <>
       <CustomHeader
-        title="Gestión de Productos Bancarios"
+        title="Productos Bancarios"
         subtitle="Encuentra los productos financieros que necesitas"
       />
 
-      <SearchBar placeholder="Buscar producto" onQuery={handleSearch} />
+      <FilterBar
+        searchQuery={searchQuery}
+        selectedCategory={selectedCategory}
+        selectedState={selectedState}
+        categories={categories || []}
+        isLoadingCategories={isLoadingCategories}
+        onSearchChange={handleSearchChange}
+        onCategoryChange={handleCategoryChange}
+        onStateChange={handleStateChange}
+        onClearFilters={handleClearFilters}
+      />
 
       {products.length === 0 ? (
-        <div className="empty-state">
-          <p>No se encontraron productos</p>
-          {searchQuery && (
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setCurrentPage(1);
-              }}
-              className="clear-search-button"
-            >
-              Limpiar búsqueda
-            </button>
-          )}
-        </div>
+        <EmptyState
+          message="No se encontraron productos"
+          description={
+            searchQuery || selectedCategory || selectedState !== undefined
+              ? "Intenta ajustar los filtros de búsqueda para encontrar lo que buscas"
+              : undefined
+          }
+          actionLabel={
+            searchQuery || selectedCategory || selectedState !== undefined
+              ? "Limpiar filtros"
+              : undefined
+          }
+          onAction={
+            searchQuery || selectedCategory || selectedState !== undefined
+              ? handleClearFilters
+              : undefined
+          }
+        />
       ) : (
         <>
           <ProductTable products={products} />
           <Pagination
             currentPage={currentPage}
             totalItems={totalItems}
-            itemsPerPage={5}
+            itemsPerPage={6}
             onPageChange={handlePageChange}
           />
         </>

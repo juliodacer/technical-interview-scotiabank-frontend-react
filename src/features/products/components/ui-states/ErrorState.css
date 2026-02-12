@@ -1,0 +1,139 @@
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  min-height: 400px;
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(185, 28, 28, 0.05);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.error-icon {
+  color: #b91c1c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: scaleIn 0.4s ease-in-out;
+}
+
+.error-message {
+  font-size: 0.9375rem;
+  color: #b91c1c;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.error-retry-button {
+  padding: 0.625rem 1.5rem;
+  border: 1px solid #0f172a;
+  border-radius: 6px;
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.error-retry-button:hover {
+  background: #1e293b;
+  border-color: #1e293b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.error-retry-button:active {
+  transform: translateY(0);
+}
+
+.error-retry-button:focus {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.error-secondary-button {
+  padding: 0.625rem 1.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #475569;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.error-secondary-button:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.error-secondary-button:active {
+  transform: translateY(0);
+}
+
+.error-secondary-button:focus {
+  outline: 2px solid #475569;
+  outline-offset: 2px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 640px) {
+  .error-state {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .error-retry-button,
+  .error-secondary-button {
+    width: 100%;
+  }
+}

@@ -4,41 +4,7 @@
   padding: 1rem;
 }
 
-.loading-container,
-.error-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  text-align: center;
-  gap: 1rem;
-}
-
-.loading-message {
-  font-size: 1.125rem;
-  color: #6b7280;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-.error-message {
-  font-size: 1rem;
-  color: #dc2626;
-  background: #fee2e2;
-  padding: 1rem 1.5rem;
-  border-radius: 6px;
-  border: 1px solid #fecaca;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
+/* Estilos de estados movidos a componentes reutilizables en ui-states/ */
 
 .product-detail-container {
   background: #ffffff;
@@ -190,6 +156,14 @@
   background: #f9fafb;
   color: #6b7280;
   cursor: not-allowed;
+}
+
+.form-input-readonly {
+  background: #f8fafc;
+  color: #64748b;
+  cursor: default;
+  border-color: #e2e8f0;
+  font-weight: 400;
 }
 
 .form-textarea {
