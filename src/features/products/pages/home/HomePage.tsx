@@ -18,6 +18,10 @@ export const HomePage = () => {
   );
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
+  const handleOpenCreateModal = useCallback(() => {
+    setIsCreateModalOpen(true);
+  }, []);
+
   const { data: categories, isLoading: isLoadingCategories } = useCategories();
 
   const { data, isLoading, isError, error, refetch } = useProducts({
@@ -50,10 +54,10 @@ export const HomePage = () => {
     setCurrentPage(1);
   }, []);
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  }, []);
 
   if (isLoading) {
     return (
@@ -128,7 +132,7 @@ export const HomePage = () => {
         onCategoryChange={handleCategoryChange}
         onStateChange={handleStateChange}
         onClearFilters={handleClearFilters}
-        onCreateProduct={() => setIsCreateModalOpen(true)}
+        onCreateProduct={handleOpenCreateModal}
       />
 
       {products.length === 0 ? (

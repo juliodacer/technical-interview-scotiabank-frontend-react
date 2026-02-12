@@ -1,5 +1,7 @@
+import { useMemo, useCallback } from "react";
 import type { Category } from "../../interfaces/category.response";
 import { SearchBar } from "../SearchBar";
+import { FilterSelect } from "../filter-select/FilterSelect";
 import "./FilterBar.css";
 
 interface FilterBarProps {
@@ -15,6 +17,11 @@ interface FilterBarProps {
   onCreateProduct?: () => void;
 }
 
+const STATE_OPTIONS = [
+  { value: "true", label: "Activo" },
+  { value: "false", label: "Inactivo" },
+];
+
 export const FilterBar = ({
   searchQuery,
   selectedCategory,
@@ -27,18 +34,30 @@ export const FilterBar = ({
   onClearFilters,
   onCreateProduct,
 }: FilterBarProps) => {
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    onCategoryChange(e.target.value);
-  };
+  const categoryOptions = useMemo(
+    () =>
+      categories.map((category) => ({
+        value: category.name,
+        label: category.name,
+      })),
+    [categories],
+  );
 
-  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    if (value === "") {
-      onStateChange(undefined);
-    } else {
-      onStateChange(value === "true");
-    }
-  };
+  const handleStateChange = useCallback(
+    (value: string) => {
+      if (value === "") {
+        onStateChange(undefined);
+      } else {
+        onStateChange(value === "true");
+      }
+    },
+    [onStateChange],
+  );
+
+  const stateValue = useMemo(
+    () => (selectedState === undefined ? "" : selectedState ? "true" : "false"),
+    [selectedState],
+  );
 
   const hasActiveFilters =
     searchQuery !== "" ||
@@ -58,49 +77,31 @@ export const FilterBar = ({
           </button>
         )}
 
-        <div className="filter-search-wrapper">
-          <SearchBar
-            placeholder="Buscar producto..."
-            value={searchQuery}
-            onQuery={onSearchChange}
-          />
-        </div>
+        <SearchBar
+          placeholder="Buscar producto..."
+          value={searchQuery}
+          onQuery={onSearchChange}
+        />
 
-        <select
+        <FilterSelect
           id="category-select"
           value={selectedCategory}
-          onChange={handleCategoryChange}
-          className={`filter-select ${isLoadingCategories ? "filter-select-loading" : ""}`}
-          aria-label="Filtrar por categoría"
-          disabled={isLoadingCategories}
-          aria-busy={isLoadingCategories}
-        >
-          <option value="">
-            {isLoadingCategories
-              ? "Cargando categorías..."
-              : "Todas las categorías"}
-          </option>
-          {!isLoadingCategories &&
-            categories.map((category) => (
-              <option key={category.id} value={category.name}>
-                {category.name}
-              </option>
-            ))}
-        </select>
+          options={categoryOptions}
+          placeholder="Todas las categorías"
+          onChange={onCategoryChange}
+          ariaLabel="Filtrar por categoría"
+          isLoading={isLoadingCategories}
+          loadingText="Cargando categorías..."
+        />
 
-        <select
+        <FilterSelect
           id="state-select"
-          value={
-            selectedState === undefined ? "" : selectedState ? "true" : "false"
-          }
+          value={stateValue}
+          options={STATE_OPTIONS}
+          placeholder="Todos los estados"
           onChange={handleStateChange}
-          className="filter-select"
-          aria-label="Filtrar por estado"
-        >
-          <option value="">Todos los estados</option>
-          <option value="true">Activo</option>
-          <option value="false">Inactivo</option>
-        </select>
+          ariaLabel="Filtrar por estado"
+        />
 
         <button
           onClick={onClearFilters}

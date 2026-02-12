@@ -1,4 +1,4 @@
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { memo, useCallback, useEffect, useState, type KeyboardEvent } from "react";
 
 interface SearchBarProps {
   placeholder: string;
@@ -6,7 +6,7 @@ interface SearchBarProps {
   onQuery: (query: string) => void;
 }
 
-export const SearchBar = ({
+export const SearchBar = memo(({
   placeholder = "Buscar",
   value: externalValue,
   onQuery,
@@ -29,20 +29,19 @@ export const SearchBar = ({
     };
   }, [query, onQuery]);
 
-  const handleSearch = () => {
-    onQuery(query);
-  };
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Enter") {
+        onQuery(query);
+      }
+    },
+    [query, onQuery],
+  );
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSearch();
-    }
-  };
-
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     setQuery("");
     onQuery("");
-  };
+  }, [onQuery]);
 
   return (
     <div className="search-container">
@@ -69,4 +68,4 @@ export const SearchBar = ({
       {/* <button onClick={handleSearch}>Buscar</button> */}
     </div>
   );
-};
+});

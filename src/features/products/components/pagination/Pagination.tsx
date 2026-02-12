@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import "./Pagination.css";
 
 interface PaginationProps {
@@ -7,7 +8,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export const Pagination = ({
+export const Pagination = memo(({
   currentPage,
   totalItems,
   itemsPerPage,
@@ -17,7 +18,7 @@ export const Pagination = ({
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
-  const getPageNumbers = (): (number | string)[] => {
+  const pageNumbers = useMemo((): (number | string)[] => {
     if (totalPages <= 6) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
@@ -50,9 +51,7 @@ export const Pagination = ({
       "...",
       lastPage,
     ];
-  };
-
-  const pageNumbers = getPageNumbers();
+  }, [currentPage, totalPages]);
 
   return (
     <nav className="pagination" aria-label="Navegación de páginas">
@@ -107,4 +106,4 @@ export const Pagination = ({
       </div>
     </nav>
   );
-};
+});

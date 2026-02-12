@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 import type { Product } from "../../interfaces/product.response";
 import { ConfirmDialog } from "../confirm-dialog/ConfirmDialog";
@@ -9,6 +9,11 @@ import "./ProductTable.css";
 interface ProductTableProps {
   products: Product[];
 }
+
+const truncateText = (text: string, maxLength: number = 60) => {
+  if (text.length <= maxLength) return text;
+  return `${text.substring(0, maxLength)}...`;
+};
 
 export const ProductTable = ({ products }: ProductTableProps) => {
   const navigate = useNavigate();
@@ -27,15 +32,18 @@ export const ProductTable = ({ products }: ProductTableProps) => {
     isVisible: false,
   });
 
-  const handleViewDetails = (productId: number) => {
-    navigate(`/product/${productId}`);
-  };
+  const handleViewDetails = useCallback(
+    (productId: number) => {
+      navigate(`/product/${productId}`);
+    },
+    [navigate],
+  );
 
-  const handleDeleteClick = (product: Product) => {
+  const handleDeleteClick = useCallback((product: Product) => {
     setProductToDelete({ id: product.id, name: product.name });
-  };
+  }, []);
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
     if (productToDelete) {
       deleteMutation.mutate(productToDelete.id, {
         onSuccess: () => {
@@ -59,18 +67,17 @@ export const ProductTable = ({ products }: ProductTableProps) => {
         },
       });
     }
-  };
+  }, [productToDelete, deleteMutation]);
 
-  const handleCancelDelete = () => {
+  const handleCancelDelete = useCallback(() => {
     if (!deleteMutation.isPending) {
       setProductToDelete(null);
     }
-  };
+  }, [deleteMutation.isPending]);
 
-  const truncateText = (text: string, maxLength: number = 60) => {
-    if (text.length <= maxLength) return text;
-    return `${text.substring(0, maxLength)}...`;
-  };
+  const handleCloseToast = useCallback(() => {
+    setToast((prev) => ({ ...prev, isVisible: false }));
+  }, []);
 
   return (
     <div className="product-table-container">
@@ -149,7 +156,7 @@ export const ProductTable = ({ products }: ProductTableProps) => {
         message={toast.message}
         type={toast.type}
         isVisible={toast.isVisible}
-        onClose={() => setToast((prev) => ({ ...prev, isVisible: false }))}
+        onClose={handleCloseToast}
       />
     </div>
   );
