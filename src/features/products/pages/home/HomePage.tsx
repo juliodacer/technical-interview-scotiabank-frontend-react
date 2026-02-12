@@ -3,6 +3,7 @@ import { CustomHeader } from "../../../../components/CustomHeader";
 import { FilterBar } from "../../components/filter-bar/FilterBar";
 import { ProductTable } from "../../components/product-table/ProductTable";
 import { Pagination } from "../../components/pagination/Pagination";
+import { ProductModal } from "../../components/product-modal/ProductModal";
 import { LoadingState, ErrorState, EmptyState } from "../../components/ui-states";
 import { useProducts } from "../../hooks/useProducts";
 import { useCategories } from "../../hooks/useCategories";
@@ -15,6 +16,7 @@ export const HomePage = () => {
   const [selectedState, setSelectedState] = useState<boolean | undefined>(
     undefined,
   );
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const { data: categories, isLoading: isLoadingCategories } = useCategories();
 
@@ -126,6 +128,7 @@ export const HomePage = () => {
         onCategoryChange={handleCategoryChange}
         onStateChange={handleStateChange}
         onClearFilters={handleClearFilters}
+        onCreateProduct={() => setIsCreateModalOpen(true)}
       />
 
       {products.length === 0 ? (
@@ -158,6 +161,12 @@ export const HomePage = () => {
           />
         </>
       )}
+
+      <ProductModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        mode="create"
+      />
     </>
   );
 };
