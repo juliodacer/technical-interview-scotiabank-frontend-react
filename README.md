@@ -1,31 +1,48 @@
-# 🏦 Sistema de Gestión de Productos Bancarios - Scotiabank
+# Sistema de Gestión de Productos Bancarios - Scotiabank
 
-Aplicación web moderna para la gestión de productos financieros desarrollada con React, TypeScript y TanStack Query. Este proyecto implementa un sistema completo de visualización, búsqueda, filtrado y gestión de productos bancarios con una interfaz minimalista y accesible.
+Aplicación web moderna para la gestión de productos financieros desarrollada con React, TypeScript y TanStack Query. Implementa un CRUD completo con búsqueda avanzada, filtros, paginación e interfaz minimalista y accesible.
 
-## 📋 Descripción del Proyecto
+## Descripción del Proyecto
 
-Sistema de gestión bancaria que permite administrar el catálogo de productos financieros (cuentas, tarjetas, préstamos, inversiones y seguros) con funcionalidades de búsqueda avanzada, paginación, y próximamente operaciones CRUD completas.
+Sistema de gestión bancaria que permite administrar el catálogo de productos financieros (tarjetas, créditos, cuentas) con operaciones completas de creación, lectura, actualización y eliminación, búsqueda en tiempo real, filtrado multicritrio y paginación servidor.
 
-## ✨ Características Implementadas
+## Tiempo invertido en la realización del proyecto
+4.5 hrs aproximadamente
 
-### 🎯 Funcionalidades Principales
+## Características Implementadas
 
-- **Listado de Productos con Paginación**: Visualización de productos bancarios con navegación por páginas (6 elementos por página)
-- **Búsqueda en Tiempo Real**: Búsqueda con debounce (700ms) para optimizar consultas al servidor
-- **Filtros Avanzados**: Filtrado por query, categoría y estado (activo/inactivo)
-- **Detalle de Producto**: Vista completa de información del producto con formulario de edición
-- **Estados de UI**: Loading skeletons, mensajes de error y estados vacíos
-- **Responsive Design**: Diseño adaptable a dispositivos móviles, tablets y desktop
-- **Accesibilidad WCAG**: Semántica HTML5, ARIA labels y navegación por teclado
+### CRUD Completo
 
-### 🚀 Próximamente (CRUD Completo)
+- **CREATE**: Creación de productos mediante modal con formulario validado
+- **READ**: Listado paginado con tabla responsive, vista detalle individual
+- **UPDATE**: Edición de productos desde la página de detalle
+- **DELETE**: Eliminación con diálogo de confirmación y manejo de errores
 
-- ✅ **CREATE**: Crear nuevos productos bancarios
-- ✅ **READ**: Visualización y búsqueda (implementado)
-- ⏳ **UPDATE**: Editar productos existentes (formulario listo, pendiente integración API)
-- ⏳ **DELETE**: Eliminar productos del catálogo
+### Funcionalidades de UI
 
-## 🛠️ Stack Tecnológico
+- **Tabla de Productos con Paginación**: Navegación por páginas con 6 elementos por página, indicador de rango y controles siempre visibles
+- **Búsqueda en Tiempo Real**: Debounce de 700ms para optimizar consultas al servidor, botón de limpiar texto
+- **Filtros Avanzados**: Filtrado simultáneo por nombre, categoría (dropdown dinámico desde API) y estado (activo/inactivo)
+- **Detalle de Producto**: Vista completa con todos los campos, formateo de fechas con date-fns, categorías dinámicas
+- **Notificaciones Toast**: Feedback visual de éxito y error con auto-cierre configurable
+- **Diálogos de Confirmación**: Modal personalizado para acciones destructivas con variantes de estilo
+- **Estados de UI Reutilizables**: Componentes de carga (spinner), error (con reintento) y vacío (con acción opcional)
+
+### UI/UX
+
+- **Diseño Minimalista**: Paleta profesional basada en slate/gray con acentos verdes (éxito), rojos (error) y ámbar (advertencia)
+- **Animaciones Sutiles**: fadeIn, scaleIn, floatIn, spinner y pulse para transiciones suaves
+- **Responsive Design**: Tabla en desktop/tablet, adaptación en móvil
+- **Accesibilidad WCAG**: Semántica HTML5, ARIA labels, navegación por teclado, roles, aria-live y focus visible
+
+### Optimización de Rendimiento
+
+- **React.memo**: Componentes hoja memoizados (FilterSelect, SearchBar, Pagination) para evitar re-renders innecesarios
+- **useMemo**: Cálculos derivados memoizados (categoryOptions, pageNumbers, stateValue)
+- **useCallback**: Referencias de funciones estabilizadas para callbacks pasados como props
+- **TanStack Query**: Caché inteligente, staleTime, placeholderData para transiciones suaves
+
+## Stack Tecnológico
 
 ### Core
 
@@ -35,66 +52,95 @@ Sistema de gestión bancaria que permite administrar el catálogo de productos f
 
 ### Gestión de Estado y Datos
 
-- **TanStack Query v5** - Server state management, caché y sincronización
+- **TanStack Query v5** - Server state management, caché, mutations y sincronización
 - **React Router v7** - Enrutamiento declarativo
 - **Axios 1.13** - Cliente HTTP
 
+### Utilidades
+
+- **date-fns 4.1** - Formateo y manipulación de fechas con soporte de locale español
+
+### Testing
+
+- **Vitest 4.0** - Framework de testing
+- **Testing Library React 16.3** - Testing de componentes
+- **Testing Library User Event 14.6** - Simulación de interacciones de usuario
+- **Testing Library Jest DOM 6.9** - Matchers adicionales para DOM
+- **jsdom 28** - Entorno DOM para tests
+
 ### Desarrollo
 
-- **ESLint** - Linting de código
+- **ESLint 9** - Linting de código
 - **SWC** - Fast refresh y compilación rápida
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 src/
-├── components/           # Componentes globales reutilizables
-│   └── CustomHeader.tsx
+├── components/                  # Componentes globales reutilizables
+│   ├── CustomHeader.tsx
+│   └── CustomHeader.test.tsx
 ├── features/
-│   └── products/        # Feature de productos
-│       ├── components/  # Componentes específicos del feature
-│       │   ├── pagination/
-│       │   │   ├── Pagination.tsx
-│       │   │   └── Pagination.css
-│       │   ├── product-card/
-│       │   │   ├── ProductCard.tsx
-│       │   │   └── ProductCard.css
-│       │   ├── product-list/
-│       │   │   ├── ProductList.tsx
-│       │   │   └── ProductList.css
-│       │   └── SearchBar.tsx
-│       ├── hooks/       # Custom hooks
-│       │   ├── useProducts.ts
-│       │   └── useProductById.ts
-│       ├── interfaces/  # Tipos e interfaces TypeScript
-│       │   └── product.response.ts
-│       ├── layouts/     # Layouts de la aplicación
+│   └── products/                # Feature de productos
+│       ├── components/
+│       │   ├── confirm-dialog/  # Diálogo de confirmación reutilizable
+│       │   ├── filter-bar/      # Barra de filtros (búsqueda + dropdowns)
+│       │   ├── filter-select/   # Dropdown reutilizable para filtros
+│       │   ├── pagination/      # Controles de paginación
+│       │   ├── product-card/    # Card de producto (vista legacy)
+│       │   ├── product-form/    # Formulario de producto (crear/editar)
+│       │   ├── product-list/    # Lista de productos (vista legacy)
+│       │   ├── product-modal/   # Modal para crear productos
+│       │   ├── product-table/   # Tabla principal con acciones
+│       │   ├── toast/           # Notificaciones toast
+│       │   ├── ui-states/       # LoadingState, ErrorState, EmptyState
+│       │   └── SearchBar.tsx    # Búsqueda con debounce
+│       ├── hooks/               # Custom hooks con TanStack Query
+│       │   ├── useProducts.ts         # Query: listado paginado
+│       │   ├── useProductById.ts      # Query: detalle por ID
+│       │   ├── useCategories.ts       # Query: listado de categorías
+│       │   ├── useCreateProduct.ts    # Mutation: crear producto
+│       │   ├── useUpdateProduct.ts    # Mutation: actualizar producto
+│       │   └── useDeleteProduct.ts    # Mutation: eliminar producto
+│       ├── interfaces/          # Tipos e interfaces TypeScript
+│       │   ├── product.response.ts
+│       │   ├── product-mutations.ts
+│       │   └── category.response.ts
+│       ├── layouts/
 │       │   └── ProductsLayout.tsx
-│       ├── pages/       # Páginas/vistas
-│       │   ├── home/
-│       │   │   ├── HomePage.tsx
-│       │   │   └── HomePage.css
-│       │   └── product-detail/
-│       │       ├── ProductDetailPage.tsx
-│       │       └── ProductDetailPage.css
-│       └── services/    # Servicios y lógica de negocio
-│           ├── actions/
-│           │   ├── get-products-by-query.ts
-│           │   └── get-product-by-id.ts
-│           └── api/
-│               └── productApi.tsx
-├── router/              # Configuración de rutas
+│       ├── pages/
+│       │   ├── home/            # Página principal con tabla y filtros
+│       │   └── product-detail/  # Página de detalle/edición
+│       ├── services/
+│       │   ├── actions/         # Funciones de API
+│       │   │   ├── get-products-by-query.ts
+│       │   │   ├── get-product-by-id.ts
+│       │   │   ├── get-categories.ts
+│       │   │   ├── create-product.ts
+│       │   │   ├── update-product.ts
+│       │   │   └── delete-product.ts
+│       │   └── api/
+│       │       └── productApi.tsx
+│       └── utils/
+│           └── validateProduct.ts  # Validaciones de formulario
+├── test/                        # Configuración y helpers de testing
+│   ├── setup.ts
+│   ├── helpers.tsx
+│   └── mocks/
+│       └── products.ts
+├── router/
 │   └── app.router.tsx
-├── ProductsApp.tsx      # App principal con providers
-└── main.tsx            # Entry point
+├── index.css
+├── ProductsApp.tsx
+└── main.tsx
 ```
 
-## 🚦 Instalación y Ejecución
+## Instalación y Ejecución
 
 ### Requisitos Previos
 
 - Node.js 18+
-- pnpm 8+ (o npm/yarn)
+- pnpm 10+ (recomendado)
 
 ### Instalación
 
@@ -112,7 +158,7 @@ pnpm install
 Crear un archivo `.env` en la raíz del proyecto:
 
 ```env
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3003/api
 ```
 
 ### Ejecutar en Desarrollo
@@ -130,105 +176,128 @@ pnpm build
 pnpm preview
 ```
 
-## 🔌 API Endpoints
+## Testing
+
+El proyecto incluye una suite de tests con **133 tests** distribuidos en **21 archivos de test**.
+
+### Ejecutar Tests
+
+```bash
+pnpm test          # Modo watch (re-ejecuta al guardar cambios)
+pnpm test:run      # Ejecuta todos los tests una vez
+pnpm test:coverage # Ejecuta con reporte de cobertura
+```
+
+### Cobertura de Tests
+
+| Capa | Archivos | Tests | Descripción |
+|---|---|---|---|
+| Utilidades | 1 | 19 | Validaciones de formulario |
+| Service Actions | 6 | 18 | Llamadas API con mocks de axios |
+| Custom Hooks | 5 | 14 | Hooks con QueryClientProvider |
+| Componentes simples | 6 | 45 | CustomHeader, LoadingState, EmptyState, ErrorState, Toast, FilterSelect |
+| Componentes con estado | 3 | 37 | Pagination, SearchBar, ConfirmDialog |
+
+### Estrategia de Testing
+
+- **Utilidades puras**: Tests directos de funciones sin dependencias externas
+- **Service Actions**: Mock de `productApi` (axios) para verificar endpoints, parámetros y respuestas
+- **Custom Hooks**: Wrapper con `QueryClientProvider` y mock de las actions
+- **Componentes**: Testing Library con interacciones de usuario reales (`userEvent`), verificación de accesibilidad y comportamiento
+
+## API Endpoints
 
 ### Productos
 
-**GET** `/products`
+| Método | Endpoint | Descripción |
+|---|---|---|
+| **GET** | `/products?page=1&size=6&q=oro&category=Tarjeta&state=true` | Listado paginado con filtros |
+| **GET** | `/products/:id` | Detalle de un producto |
+| **POST** | `/products` | Crear producto |
+| **PATCH** | `/products/:id` | Actualizar producto (parcial) |
+| **DELETE** | `/products/:id` | Eliminar producto |
 
-- Query params: `?page=1&size=6&q=busqueda&category=Cuentas&state=true`
-- Respuesta: `{ products: Product[], total: number, page: number }`
+### Categorías
 
-**GET** `/products/:id`
+| Método | Endpoint | Descripción |
+|---|---|---|
+| **GET** | `/categories` | Listado de categorías |
 
-- Respuesta: `Product`
+### Ejemplo de Request (POST /products)
 
-**PUT** `/products/:id`
-
-- Body: `Product`
-- Respuesta: `Product`
-
-**POST** `/products`
-
-- Body: `Omit<Product, 'id'>`
-- Respuesta: `Product`
-
-**DELETE** `/products/:id`
-
-- Respuesta: `{ success: boolean }`
+```json
+{
+  "code": "TCO0007",
+  "name": "Tarjeta de Crédito Oro",
+  "description": "Programa de recompensas y seguros incluidos.",
+  "price": 0.0,
+  "categoryId": 1
+}
+```
 
 ## Arquitectura y Patrones
 
 ### Feature-Based Architecture
 
-El proyecto sigue una arquitectura modular basada en features, donde cada característica (products, auth, etc.) es auto-contenida con sus propios componentes, hooks, servicios y tipos.
+Arquitectura modular donde cada feature es auto-contenida con sus propios componentes, hooks, servicios y tipos.
 
 ### TanStack Query para Server State
 
-- **Caché inteligente**: 5 minutos staleTime, 10 minutos gcTime
-- **Optimistic updates**: `placeholderData` para transiciones suaves
-- **Query keys dinámicas**: Invalidación granular del caché
+- **Queries**: `useProducts`, `useProductById`, `useCategories` con caché, staleTime y placeholderData
+- **Mutations**: `useCreateProduct`, `useUpdateProduct`, `useDeleteProduct` con invalidación granular del caché
 - **DevTools**: Debugging visual del estado del servidor
 
 ### Custom Hooks Pattern
 
-Abstracción de lógica compleja en hooks reutilizables (`useProducts`, `useProductById`)
+Abstracción de lógica en hooks reutilizables que encapsulan queries y mutations de TanStack Query.
 
 ### Component Composition
 
-Componentes pequeños, reutilizables y con responsabilidad única siguiendo principios SOLID
+Componentes pequeños, reutilizables y con responsabilidad única. Componentes de UI state (`LoadingState`, `ErrorState`, `EmptyState`) y de formulario (`ProductForm`, `FilterSelect`) extraídos para reutilización.
+
+### Validaciones
+
+Funciones de validación puras (`validateProductForm`, `hasFormErrors`) separadas de los componentes, fácilmente testeables.
 
 ## Convenciones de Código
 
 ### Nomenclatura
 
-- **Componentes**: PascalCase (`ProductCard.tsx`)
+- **Componentes**: PascalCase (`ProductForm.tsx`)
 - **Hooks**: camelCase con prefijo `use` (`useProducts.ts`)
+- **Tests**: Mismo nombre con sufijo `.test` (`useProducts.test.tsx`)
 - **Funciones/variables**: camelCase en inglés
 - **Mensajes UI**: Español
-- **Comentarios**: Inglés
-
-### Estructura de Archivos
-
-- Un componente por archivo
-- Estilos CSS colocados junto al componente
-- Interfaces compartidas en carpeta `interfaces/`
-- Lógica de negocio en `services/`
+- **Comentarios y código**: Inglés
 
 ### Clean Code
 
 - Funciones pequeñas y con un solo propósito
 - Nombres descriptivos y auto-explicativos
-- Evitar abreviaciones confusas
-- DRY (Don't Repeat Yourself)
-- KISS (Keep It Simple, Stupid)
+- SOLID, DRY, KISS
+- Componentes memoizados donde aporta valor real
 
 ## Accesibilidad
 
-- ✅ Semántica HTML5 (`<article>`, `<nav>`, `<main>`, `<form>`)
-- ✅ ARIA labels y roles apropiados
-- ✅ Navegación por teclado (Tab, Enter, Space)
-- ✅ Focus visible para elementos interactivos
-- ✅ Contraste de colores WCAG AA
-- ✅ Textos alternativos y descripciones
+- Semántica HTML5 (`<header>`, `<nav>`, `<main>`, `<form>`, `<table>`)
+- ARIA: `role`, `aria-label`, `aria-live`, `aria-busy`, `aria-modal`, `aria-current`, `aria-invalid`, `aria-required`
+- Navegación por teclado (Tab, Enter, Escape)
+- Focus visible para elementos interactivos
+- Contraste de colores WCAG AA
+- Scroll lock en modales/diálogos
 
 ## Scripts Disponibles
 
 ```bash
-pnpm dev      # Servidor de desarrollo
-pnpm build    # Build de producción
-pnpm preview  # Preview del build
-pnpm lint     # Linting de código
+pnpm dev           # Servidor de desarrollo
+pnpm build         # Build de producción
+pnpm preview       # Preview del build
+pnpm lint          # Linting de código
+pnpm test          # Tests en modo watch
+pnpm test:run      # Tests una sola vez
+pnpm test:coverage # Tests con cobertura
 ```
-
-## Contribución
-
-Este proyecto sigue clean code principles y convenciones estrictas. Por favor revisa las guías de estilo antes de contribuir.
-
-## 📄 Licencia
-
-Privado - Scotiabank Technical Interview
 
 ---
 
-Desarrollado con ❤️ para Scotiabank
+Desarrollado para Scotiabank Technical Interview
