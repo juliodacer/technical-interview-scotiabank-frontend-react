@@ -21,17 +21,20 @@ export const Pagination = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   const getPageNumbers = (): (number | string)[] => {
-    if (totalPages <= 5) {
+    if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
-    if (currentPage <= 3) {
-      return [1, 2, 3, 4, 5, "...", totalPages];
+    const firstPage = 1;
+    const lastPage = totalPages;
+
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, "...", lastPage];
     }
 
-    if (currentPage >= totalPages - 2) {
+    if (currentPage >= totalPages - 3) {
       return [
-        1,
+        firstPage,
         "...",
         totalPages - 4,
         totalPages - 3,
@@ -42,13 +45,13 @@ export const Pagination = ({
     }
 
     return [
-      1,
+      firstPage,
       "...",
       currentPage - 1,
       currentPage,
       currentPage + 1,
       "...",
-      totalPages,
+      lastPage,
     ];
   };
 
